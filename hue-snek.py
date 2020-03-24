@@ -131,7 +131,4 @@ class hue(object):
             return self.light_modelid
 
 
-h = hue("http://192.168.178.75", "O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I")
-
-print(Light(1, h).name)
-#print(hue("http://192.168.178.75", "O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I").req('GET', 'http://192.168.178.75/api/O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I/lights/1'))
+#print(Light(1, h).name)

@@ -8,10 +8,16 @@ hue-snek is a python library for the Philips Hue API, that allows for easy API i
 
 I will add more documentation and progress reports in the following days since the projects is still very bare bones at the moment.
 
-
 # Features
 
+- get light information (name, state, modelname, etc.)
+- set light parameter (on/off, brightness, hue)
+- connect to bridge
+
 # WIP
+
+- add parameter control
+- basically finish most of the base code: Light class, hue class functions
 
 # Examples
 

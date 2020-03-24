@@ -19,19 +19,31 @@ class Light(object):
         self.bridge = bridge
         self.light_id = light_id
 
-        self.name
-        self.brightness
-        self.saturation
-        self.hue
-        self.state
+        self._name = None
+        self._brightness = None
+        self._saturation = None
+        self._hue = None
+        self._state = None
 
     def __repr__(self):
         #change how isinstances are represented
         return f'<{self.__class__.__module__}.{self.__class__.__name__} object "{self.name}"'
 
-    def get(self):
-        #linking to get_light functio for internal class use
-        return self.bridge.get_light(self.light_id)
+    def get(self, *args):
+        #linking to get_light function for internal class use
+        return self.bridge.get_light(self.light_id, *args)
+
+    def set(self, *args):
+        #link to set_light function for internal class use
+        return self.bridge.set_light(self.light_id, *args)
+
+    @property
+    def name(self):
+        return self.get('name')
+
+    @name.setter
+    def name(self, value):
+        self._name = value
 
 
 class hue(object):
@@ -92,6 +104,16 @@ class hue(object):
         if param in ['name', 'modelid', 'type', 'productname', 'productid']:
             return state[param]
 
+    def set_light(self, light_id=None, param=None, value=None):
+        #set light's parameter value based on light id
+        if (light_id is None) or (param is None) or (value is None):
+            return 1
+        data = f'{{"{param}":{value}}}'
+        print(data)
+        lid = str(light_id)
+        self.req('PUT', f'{self.address}lights/{lid}/state', data)
+        print(f'{self.address}lights/{lid}/state')
+
     def get_lights(self, mode=None):
         #gets all lights (WIP: CHANGE TO LIGHT OBJECT INSTEAD OF LIST!!)
         lights = self.req('GET', f'{self.address}lights')
@@ -109,7 +131,7 @@ class hue(object):
             return self.light_modelid
 
 
-hue("http://192.168.178.75",
-    "O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I").get_light(1, 'productid')
+h = hue("http://192.168.178.75", "O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I")
 
+print(Light(1, h).name)
 #print(hue("http://192.168.178.75", "O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I").req('GET', 'http://192.168.178.75/api/O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I/lights/1'))

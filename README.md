@@ -19,7 +19,6 @@ I will add more documentation and progress reports in the following days since t
 - add parameter control
 - basically finish most of the base code: Light class, hue class functions
 - Light class properties
--
 
 # Example
 

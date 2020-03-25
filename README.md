@@ -13,8 +13,6 @@ I will add more documentation and progress reports in the following days since t
 - get light information (name, state, modelname, etc.)
 - set light parameter (on/off, brightness, hue)
 - connect to bridge
-- 
-
 
 # WIP
 

@@ -1,7 +1,7 @@
 # hue_snek
 > A python Library for the Philips Hue API
 
-<img align="right" border="0" padding="4" src="https://github.com/channel-42/hue-snek/blob/master/.resources/snek.png" width="50%">
+<img align="right" border="0" padding="4" src="https://github.com/channel-42/hue-snek/blob/master/.resources/snek.png" width="30%">
 
 
 <div style="text-align: justify">

@@ -2,9 +2,13 @@
 > A python Library for the Philips Hue API
 
 <div size="100%">
+  
   <p align="center"
-    <img align="center" border="0" padding="4" src="https://github.com/channel-42/hue-snek/blob/master/.resources/snek.png" width="50%">
+    
+    <img border="0" padding="4" src="https://github.com/channel-42/hue-snek/blob/master/.resources/snek.png" width="50%">
+  
   </p>
+
 </div>
 
 <div style="text-align: justify">

@@ -1,19 +1,15 @@
 # hue_snek
 > A python Library for the Philips Hue API
 
-<div style="text-align: justify; width: 100%">
+<img align="center" border="0" padding="4" src="https://github.com/channel-42/hue-snek/blob/master/.resources/snek.png" width="50%">
 
-<img align="left" border="0" padding="4" src="https://github.com/channel-42/hue-snek/blob/master/.resources/snek.png" width="50%">
+
+<div style="text-align: justify">
 
 ## About
 hue_snek is a python library for the Philips Hue API, that allows for easy API integration into other projects. The goal of this library is to provide the basic functions needed to interact with the Hue API, without unecessary functions.  
 
 I will add more documentation and progress reports in the following days since the projects is still very bare bones at the moment.
-
-</div>
-
-<div style="text-align: justify">
-
 
 ## Features
 

@@ -21,7 +21,8 @@ I will add more documentation and progress reports in the following days since t
 
 ## WIP
 
-- add get_groups() funktion, to get all groups (similar to get_lights())
+- add `get_groups()` funktion, to get all groups ( similar to `get_lights()` )
+- add scene control
 
 ## Example
 

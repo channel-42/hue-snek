@@ -62,6 +62,33 @@ class Light(object):
         self._brightness = value
         self.set('bri', self._brightness)
 
+    @property
+    def saturation(self):
+        return self.get('sat')
+
+    @saturation.setter
+    def saturation(self):
+        self._saturation = self.get('sat')
+        return self._saturation
+
+    @property
+    def hue(self):
+        return self.get('hue')
+
+    @hue.setter
+    def hue(self):
+        self._hue = self.get('hue')
+        return self._hue
+
+    @property
+    def state(self):
+        return self.get('on')
+
+    @state.setter
+    def state(self):
+        self._state = self.get('on')
+        return self._state
+
 
 class hue(object):
     def __init__(self, ip=None, user=None):
@@ -73,13 +100,16 @@ class hue(object):
         self.light_modelid = {}
         self.light_object = {}
 
-    def checkup(self):  #basic up check and username check
+    def checkup(self):
+        #basic up check and username check
         api = http.request('GET', self.address)
+
         #check for http connection
         if api.status != 200:
             return 1
 
         js = json.loads(api.data.decode('utf-8'))
+
         #check for api error (eg wrong username)
         try:
             if js[0]['error']:
@@ -154,7 +184,29 @@ class hue(object):
         if mode == "modelid":
             return self.light_modelid
 
+    def get_group(self, group_id=None, param=None):
+        #gets group info
+        if group_id is None:
+            return 1
 
-h = hue("http://192.168.178.75", "O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I")
+        gid = str(group_id)  #make sure group id is string
+        state = self.req('GET', f'{self.address}groups/{gid}')  #make request
 
-#print(Light(1, h).brightness)
+        if param is None:
+            return state  #return whole group state page
+
+        #check if parameter is in main body or in state subbody (see json structure)
+        if param in ['name', 'colormode', 'type', 'alert', 'lights']:
+            return state[param]
+        else:
+            return state['action'][param]
+
+    def set_group(self, group_id=None, param=None, value=None):
+        #set group's parameter value based on light id using the req function
+        if (group_id is None) or (param is None) or (value is None):
+            return 1
+
+        data = f'{{"{param}":{value}}}'
+        gid = str(group_id)  #make sure light_id is string
+        self.req('PUT', f'{self.address}groups/{gid}/action', data)
+        return 0

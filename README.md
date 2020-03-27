@@ -9,7 +9,7 @@
 ## About
 hue_snek is a python library for the Philips Hue API, that allows for easy API integration into other projects. The goal of this library is to provide the basic functions needed to interact with the Hue API, without unecessary functions.  
 
-I will add more documentation and progress reports in the following days since the projects is still very bare bones at the moment.
+I will add more documentation and progress reports in the following days.
 
 ## Features
 
@@ -18,11 +18,11 @@ I will add more documentation and progress reports in the following days since t
 - set light parameters  (on/off, brightness, hue, etc.)
 - get group information (name, on/off, colormode, etc.)
 - set group parameters  (on/off, brightness, hue, etc.)
+- get scene information (name, assigned group(s), etc.)
+- set scene for group   (via scene name)
 
 ## WIP
-
-- add `get_groups()` funktion, to get all groups ( similar to `get_lights()` )
-- add scene control
+- get Bridge information
 
 ## Example
 
@@ -36,22 +36,24 @@ Basic usage of this library:
 from hue_snek import hue, Light
 
 #setup bridge
-h = hue('192.168.178.20', 'generic-username')
+h = hue('your.ip.here', 'generic-username')
 
 #to check the connection to the bridge use:
-h.checkup()  #returns 0 if connection and username OK
+h.checkup()                     #returns 0 if connection and username OK
 
 #to get Light information use either the Light or Hue class
 
 #Light
-Light(1, h).name
-Light(1, h).brightness
+Light(1, h).name                #(light id, bridge)
+Light(1, h).brightness          #properties: name, brightness, hue, saturation, state
 
 #Hue
-h.get_light(2, 'name')  #parameters: see hue api
-h.get_lights('id')  #modes: obj (standard), id, name, modelid
+h.get_light(2, 'name')          #parameters: see hue api
+h.get_lights('id')              #modes: obj (default, id, name, modelid
 
-h.get_group(1, 'name')  #parameters: see hue api
+h.get_group(1, 'name')          #parameters: see hue api
+h.get_groups('name')            #modes: all (default), name, type
+
 
 #to set lights or groups use either the Light or Hue Class
 
@@ -62,6 +64,11 @@ Light(2, h).set('bri', '124')
 h.set_light(1, 'on', 'true')
 
 h.set_group(1, 'on', 'true')
+
+#scenes can be accessed and set like this:
+
+h.get_scenes('name')            #modes: all (default), name, group
+h.set_scene('Room', 'Chill')    #(group name, scene name)
 
 ```
 ## Notes

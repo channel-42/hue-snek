@@ -3,8 +3,6 @@
 Made as a "practice-project" with the help of Phue by  Nathanaël Lécaudé
 A small Hue Api Library for python
 
-Light class:
-    - missing properties: saturation, hue, state (on/off)
 
 hue-snek By Channel-42
 '''
@@ -111,21 +109,24 @@ class hue(object):
 
     def checkup(self):
         #basic up check and username check
-        api = http.request('GET', self.address)
-
-        #check for http connection
-        if api.status != 200:
-            return 1
-
-        js = json.loads(api.data.decode('utf-8'))
-
-        #check for api error (eg wrong username)
         try:
-            if js[0]['error']:
-                return js[0]['error']['description']
+            api = http.request('GET', self.address)
+
+            #check for http connection
+            if api.status != 200:
+                return 1
+
+            js = json.loads(api.data.decode('utf-8'))
+
+            #check for api error (eg wrong username)
+            try:
+                if js[0]['error']:
+                    return js[0]['error']['description']
+            except:
+                pass
+                return 0
         except:
-            pass
-            return 0
+            return 1
 
     def req(self, mode='GET', address=None, data=None):
         #main request function for GET and PUT
@@ -264,3 +265,17 @@ class hue(object):
             data = f'{{"scene":"{scene_id}"}}'
             #set scene for group
             self.req("PUT", f'{self.address}groups/{group_id}/action', data)
+
+    def get_bridge_info(self):
+        #returns dict with bridge info
+        info = self.req('GET', f'{self.address}config')
+        params = ['name', 'brideid', 'mac', 'modelid', 'apiversion']
+
+        ret = {}
+
+        #only add the above params to the return dict
+        for param, val in info.items():
+            if param in params:
+                ret[param] = val
+
+        return ret

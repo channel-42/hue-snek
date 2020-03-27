@@ -95,10 +95,19 @@ class hue(object):
         self.ip = ip
         self.user = user
         self.address = f"{ip}/api/{user}/"
+
         self.light_id = {}
         self.light_name = {}
         self.light_modelid = {}
         self.light_object = {}
+
+        self.group_all = {}
+        self.group_name = {}
+        self.group_type = {}
+
+        self.scene_all = {}
+        self.scene_name = {}
+        self.scene_group = {}
 
     def checkup(self):
         #basic up check and username check
@@ -210,3 +219,48 @@ class hue(object):
         gid = str(group_id)  #make sure light_id is string
         self.req('PUT', f'{self.address}groups/{gid}/action', data)
         return 0
+
+    def get_groups(self, mode='all'):
+        #gets all groups based on selected mode (standard is all mode) and returns dict
+        groups = self.req('GET', f'{self.address}groups')
+
+        for group, val in groups.items():
+            self.group_all[int(group)] = val
+            self.group_name[int(group)] = val['name']
+            self.group_type[int(group)] = val['type']
+
+        if mode == "all":
+            return self.group_all
+        if mode == "name":
+            return self.group_name
+        if mode == "type":
+            return self.group_type
+
+    def get_scenes(self, mode='all'):
+        #gets all scenes based on selected mode (standard is all mode) and returns dict
+        scenes = self.req('GET', f'{self.address}scenes')
+
+        for scene, val in scenes.items():
+            self.scene_all[str(scene)] = val
+            self.scene_name[str(scene)] = val['name']
+            self.scene_group[str(scene)] = val.get(
+                "group")  #using ["group] raises a KeyError
+
+        if mode == "all":
+            return self.scene_all
+        if mode == "name":
+            return self.scene_name
+        if mode == "group":
+            return self.scene_group
+
+    def set_scene(self, group_id=1, scene_name=None):
+        #sets a scene for specific group based on scene name
+        scenes = self.get_scenes("name")
+
+        if scene_name in scenes.values():
+            #get scene id from given name
+            scene_id = list(scenes.keys())[list(
+                scenes.values()).index(scene_name)]
+            data = f'{{"scene":"{scene_id}"}}'
+            #set scene for group
+            self.req("PUT", f'{self.address}groups/{group_id}/action', data)

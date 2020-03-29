@@ -8,8 +8,6 @@ hue-snek By Channel-42
 '''
 
 import json
-import os
-import sys
 import urllib3
 
 #urllib Pool Manager is needed for http requests
@@ -17,6 +15,9 @@ http = urllib3.PoolManager()
 
 
 class Light(object):
+    """Light.
+    Light object
+    """
     def __init__(self, light_id, bridge):
         self.bridge = bridge
         self.light_id = light_id
@@ -28,15 +29,26 @@ class Light(object):
         self._state = None
 
     def __repr__(self):
-        #change how instances are represented
+        """__repr__.
+        chenges the way how instace is represented
+        """
         return f'<{self.__class__.__module__}.{self.__class__.__name__} object "{self.name}"'
 
     def get(self, *args):
+        """get.
+        Passthrough function for getting light info
+        Args:
+            args: (str type) e.g. "name", "on", "bri", etc. See Hue Api for all options
+        """
         #linking to get_light function for internal class use
         return self.bridge.get_light(self.light_id, *args)
 
     def set(self, *args):
-        #link to set_light function for internal class use
+        """set.
+        Passtrough function to set light properties
+        Args:
+            args: (str type) e.g. "on", "bri", "hue" (see Hue Api for all options)
+        """
         return self.bridge.set_light(self.light_id, *args)
 
     #get and set properties of light object (name, brightness, etc.)
@@ -88,7 +100,10 @@ class Light(object):
         return self._state
 
 
-class hue(object):
+class Hue(object):
+    """Hue.
+    Main bridge object
+    """
     def __init__(self, ip=None, user=None):
         self.ip = ip
         self.user = user
@@ -108,6 +123,9 @@ class hue(object):
         self.scene_group = {}
 
     def checkup(self):
+        """checkup.
+        Checks connection to the bridge by doing a http request and then seeing if the API throws any error
+        """
         #basic up check and username check
         try:
             api = http.request('GET', self.address)
@@ -129,8 +147,15 @@ class hue(object):
             return 1
 
     def req(self, mode='GET', address=None, data=None):
+        """req.
+        main request function for getting and setting data from the API
+        Args:
+            mode: 'GET' or 'PUT'
+            address: The URL address of the request
+            data: The data sent to the API. Only used if mode is 'PUT'.
+        """
         #main request function for GET and PUT
-        if address == None:
+        if address is None:
             address = self.address  #use standard adress (see __init__)
         try:
             #get request
@@ -149,6 +174,13 @@ class hue(object):
             return 1
 
     def get_light(self, light_id=None, param=None):
+        """get_light.
+        Gets light data and returns it as dict
+
+        Args:
+            light_id: Id of a light
+            param: The Parameter that should be returned (e.g. "name", "on"). Leave unset if everything should be returned
+        """
         #get light info
         if light_id is None:
             return 1
@@ -166,6 +198,13 @@ class hue(object):
             return state['state'][param]
 
     def set_light(self, light_id=None, param=None, value=None):
+        """set_light.
+        Sets a value of a light 
+        Args:
+            light_id: Target light's id
+            param: Target parameter (see API for options)
+            value: Desired value
+        """
         #set light's parameter value based on light id using the req function
         if (light_id is None) or (param is None) or (value is None):
             return 1
@@ -176,6 +215,11 @@ class hue(object):
         return 0
 
     def get_lights(self, mode='obj'):
+        """get_lights.
+        Gets all lights listed in the API
+        Args:
+            mode: The infomration the function returns (str type: obj, id, name, modelid)
+        """
         #gets all lights based on selected mode (standard is object mode) and returns dict
         lights = self.req('GET', f'{self.address}lights')
 
@@ -195,6 +239,12 @@ class hue(object):
             return self.light_modelid
 
     def get_group(self, group_id=None, param=None):
+        """get_group.
+        Gets a groups and returns it as dict
+        Args:
+            group_id: The groups id
+            param: The parameter that should be returned (leave unset if everything should be returned)
+        """
         #gets group info
         if group_id is None:
             return 1
@@ -212,6 +262,13 @@ class hue(object):
             return state['action'][param]
 
     def set_group(self, group_id=None, param=None, value=None):
+        """set_group.
+        Sets a parameter of a group
+        Args:
+            group_id: Target group's id
+            param: Target parameter
+            value: Desired value
+        """
         #set group's parameter value based on light id using the req function
         if (group_id is None) or (param is None) or (value is None):
             return 1
@@ -222,6 +279,12 @@ class hue(object):
         return 0
 
     def get_groups(self, mode='all'):
+        """get_groups.
+        Gets all groups listed in the API
+
+        Args:
+            mode: Changes return mode (str type: all, name, type)
+        """
         #gets all groups based on selected mode (standard is all mode) and returns dict
         groups = self.req('GET', f'{self.address}groups')
 
@@ -238,6 +301,11 @@ class hue(object):
             return self.group_type
 
     def get_scenes(self, mode='all'):
+        """get_scenes.
+        Gets all scenes listed in the API
+        Args:
+            mode: Changes return mode (str type: all, name, group)
+        """
         #gets all scenes based on selected mode (standard is all mode) and returns dict
         scenes = self.req('GET', f'{self.address}scenes')
 
@@ -255,6 +323,13 @@ class hue(object):
             return self.scene_group
 
     def set_scene(self, group_id=1, scene_name=None):
+        """set_scene.
+        Sets a scene for a specified groub (by id)
+
+        Args:
+            group_id: Target group's id
+            scene_name: Desired scene
+        """
         #sets a scene for specific group based on scene name
         scenes = self.get_scenes("name")
 
@@ -267,6 +342,9 @@ class hue(object):
             self.req("PUT", f'{self.address}groups/{group_id}/action', data)
 
     def get_bridge_info(self):
+        """get_bridge_info.
+        Returns bridge's name, id, mac-address, model-id and api-version as dict
+        """
         #returns dict with bridge info
         info = self.req('GET', f'{self.address}config')
         params = ['name', 'brideid', 'mac', 'modelid', 'apiversion']

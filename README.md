@@ -11,6 +11,10 @@ hue_snek is a python library for the Philips Hue API, that allows for easy API i
 
 I will add more documentation and progress reports in the following days.
 
+## Installation
+
+`pip install hue-snek-channel42`
+
 ## Features
 
 - connect to bridge
@@ -29,12 +33,10 @@ I will add more documentation and progress reports in the following days.
 
 Basic usage of this library:
 
-> Note that at the moment the hue_snek.py file has to be in the same directory as your script or in pythons path. You could also append the system path at the beginning of you file with `import sys` and then `sys.path.append('path/to/file')`, then `import hue_snek`.
-
 </div>
 
 ```python
-from hue_snek import Hue, Light
+from hue_snek_pkg.hue_snek import Hue, Light
 
 #setup bridge
 h = Hue('your.ip.here', 'generic-username')

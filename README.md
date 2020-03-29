@@ -20,9 +20,10 @@ I will add more documentation and progress reports in the following days.
 - set group parameters  (on/off, brightness, hue, etc.)
 - get scene information (name, assigned group(s), etc.)
 - set scene for group   (via scene name)
+- get bridge information (name, mac, api-version, etc.)
 
 ## WIP
-- get Bridge information
+- Documentation
 
 ## Example
 
@@ -33,10 +34,10 @@ Basic usage of this library:
 </div>
 
 ```python
-from hue_snek import hue, Light
+from hue_snek import Hue, Light
 
 #setup bridge
-h = hue('your.ip.here', 'generic-username')
+h = Hue('your.ip.here', 'generic-username')
 
 #to check the connection to the bridge use:
 h.checkup()                     #returns 0 if connection and username OK
@@ -68,7 +69,12 @@ h.set_group(1, 'on', 'true')
 #scenes can be accessed and set like this:
 
 h.get_scenes('name')            #modes: all (default), name, group
-h.set_scene('Room', 'Chill')    #(group name, scene name)
+h.set_scene(1, 'Chill')         #(group id, scene name)
+
+info = h.get_bridge_info()
+
+for param, value in info.items():
+    print(param, value)
 
 ```
 ## Notes

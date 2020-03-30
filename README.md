@@ -1,4 +1,4 @@
-# hue_snek
+# hue_snek [![](https://img.shields.io/badge/Version-0.2-green.svg)](https://pypi.org/project/hue-snek-channel42/) ![](https://img.shields.io/badge/License-MIT-orange.svg) 
 > A python Library for the Philips Hue API
 
 <img align="right" border="0" padding="4" src="https://github.com/channel-42/hue-snek/blob/master/.resources/snek.png" width="30%">

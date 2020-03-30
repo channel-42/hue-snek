@@ -81,4 +81,4 @@ for param, value in info.items():
 ```
 ## Notes
 
-This project was inspired by ![Phue](https://github.com/studioimaginaire/phue/). Check it out :)
+This project was inspired by [Phue](https://github.com/studioimaginaire/phue/). Check it out :)

@@ -14,11 +14,82 @@ import urllib3
 http = urllib3.PoolManager()
 
 
+class Group(object):
+    """Group.
+    Group object
+    """
+    def __init__(self, group_id, bridge):
+        """__init__.
+
+        Args:
+            group_id: a groups specific id
+            bridge: hue group object
+        """
+        self.bridge = bridge
+        self.group_id = group_id
+
+        self._name = None
+        self._lights = []
+        self._state = None
+
+    def __repr__(self):
+        return f'<{self.__class__.__module__}.{self.__class__.__name__} object "{self.name}"'
+
+    def get(self, *args):
+        #linking to get_group function for internal class use
+        return self.bridge.get_group(self.group_id, *args)
+
+    def set(self, *args):
+        return self.bridge.set_group(self.group_id, *args)
+
+    @property
+    def name(self):
+        """name.
+        returns groups name
+        """
+        return self.get('name')
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+        self.set('name', self._name)
+
+    @property
+    def lights(self):
+        """lights.
+        returns array of lights inside group (id)
+        """
+        return self.get('lights')
+
+    @lights.setter
+    def lights(self, value):
+        self._lights = value
+        self.set('lights', self._lights)
+
+    @property
+    def state(self):
+        """state.
+        returns dict with all_on, any_on states
+        """
+        return self.get('state')
+
+    @state.setter
+    def state(self, value):
+        self._state = value
+        self.set('state', self._state)
+
+
 class Light(object):
     """Light.
     Light object
     """
     def __init__(self, light_id, bridge):
+        """__init__.
+
+        Args:
+            light_id: id of specific light
+            bridge: hue bridge object
+        """
         self.bridge = bridge
         self.light_id = light_id
 
@@ -55,6 +126,9 @@ class Light(object):
 
     @property
     def name(self):
+        """
+        returns light name.
+        """
         return self.get('name')
 
     @name.setter
@@ -64,6 +138,9 @@ class Light(object):
 
     @property
     def brightness(self):
+        """
+        returns light brightness.
+        """
         self._brightness = self.get('bri')
         return self._brightness
 
@@ -74,6 +151,9 @@ class Light(object):
 
     @property
     def saturation(self):
+        """
+        returns lightsaturation.
+        """
         return self.get('sat')
 
     @saturation.setter
@@ -83,6 +163,9 @@ class Light(object):
 
     @property
     def hue(self):
+        """
+        returns light hue.
+        """
         return self.get('hue')
 
     @hue.setter
@@ -92,6 +175,9 @@ class Light(object):
 
     @property
     def state(self):
+        """
+        returns on/off state.
+        """
         return self.get('on')
 
     @state.setter
@@ -256,7 +342,7 @@ class Hue(object):
             return state  #return whole group state page
 
         #check if parameter is in main body or in state subbody (see json structure)
-        if param in ['name', 'colormode', 'type', 'alert', 'lights']:
+        if param in ['name', 'colormode', 'type', 'alert', 'lights', 'state']:
             return state[param]
         else:
             return state['action'][param]
@@ -357,3 +443,8 @@ class Hue(object):
                 ret[param] = val
 
         return ret
+
+
+H = Hue('http://192.168.178.75', 'O4qAaBl9LaXonrNlAu0Pzei3ianWAJuUzYuZpC2I')
+
+print(Group(1, H).state)
